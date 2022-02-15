@@ -1,4 +1,6 @@
-﻿using mvvmtest.Models;
+﻿using mvvmtest.Commands;
+using mvvmtest.Models;
+using mvvmtest.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,17 +14,29 @@ namespace mvvmtest.ViewModels
     public class ReservationListingViewModel : ViewModelBase
     {
         private readonly ObservableCollection<ReservationViewModel> _reservations;
+        private readonly Hotel _hotel;
 
         public ICommand MakeReservationCommand { get; }
         public IEnumerable<ReservationViewModel> Reservations => _reservations;
 
-        public ReservationListingViewModel()
+        public ReservationListingViewModel(Hotel hotel, NavigationService makeReservationNavigationService)
         {
+            _hotel = hotel;
             _reservations = new ObservableCollection<ReservationViewModel>();
 
-            _reservations.Add(new ReservationViewModel(new Reservation(new RoomID(1, 2), "hkstefan", DateTime.Now, DateTime.Now)));
-            _reservations.Add(new ReservationViewModel(new Reservation(new RoomID(3, 2), "hk", DateTime.Now, DateTime.Now)));
-            _reservations.Add(new ReservationViewModel(new Reservation(new RoomID(2, 4), "joe rogan", DateTime.Now, DateTime.Now)));
+            MakeReservationCommand = new NavigateCommand(makeReservationNavigationService);
+            UpdateReservation();
+        }
+        private void UpdateReservation()
+        {
+            _reservations.Clear();
+
+            foreach(Reservation reservation in _hotel.GetReservations())
+            {
+                ReservationViewModel reservationViewModel = new ReservationViewModel(reservation);
+                _reservations.Add(reservationViewModel);
+            }
+
         }
     }
 }

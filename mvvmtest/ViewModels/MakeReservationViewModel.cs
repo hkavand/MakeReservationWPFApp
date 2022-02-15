@@ -1,4 +1,7 @@
-﻿using System;
+﻿using mvvmtest.Commands;
+using mvvmtest.Models;
+using mvvmtest.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,7 +54,7 @@ namespace mvvmtest.ViewModels
             }
         }
 
-        private DateTime _startDate;
+        private DateTime _startDate = new DateTime(2021,1,1) ;
         public DateTime StartDate
         {
             get
@@ -65,7 +68,7 @@ namespace mvvmtest.ViewModels
             }
         }
 
-        private DateTime _endDate;
+        private DateTime _endDate = new DateTime(2021, 1, 8);
         public DateTime EndDate
         {
             get
@@ -82,9 +85,10 @@ namespace mvvmtest.ViewModels
         public ICommand SubmitCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public MakeReservationViewModel()
+        public MakeReservationViewModel(Hotel hotel, NavigationService reservationViewNavigationService)
         {
-
+            SubmitCommand = new MakeReservationCommand(this, hotel, reservationViewNavigationService);
+            CancelCommand = new NavigateCommand(reservationViewNavigationService);
         }
     }
 }

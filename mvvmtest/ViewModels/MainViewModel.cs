@@ -1,4 +1,6 @@
-﻿using System;
+﻿using mvvmtest.Models;
+using mvvmtest.Stores;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +10,18 @@ namespace mvvmtest.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        public ViewModelBase CurrentViewModel { get; }
+        private readonly NavigationStore _navigationStore;
+        public ViewModelBase CurrentViewModel => _navigationStore._currentViewModel;
 
-        public MainViewModel()
+        public MainViewModel(NavigationStore navigationStore)
         {
-            //CurrentViewModel = new MakeReservationViewModel();
-            CurrentViewModel = new ReservationListingViewModel();
+            _navigationStore = navigationStore;
+            _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+        }
+
+        private void OnCurrentViewModelChanged()
+        {
+            onPropertyChanged(nameof(CurrentViewModel));
         }
     }
 }
